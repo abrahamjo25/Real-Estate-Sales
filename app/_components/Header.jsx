@@ -45,9 +45,11 @@ const Header = () => {
       </div>
 
       <div className="flex gap-2">
-        <Button className="flex gap-2">
-          <Plus /> Post your Ad
-        </Button>
+        <Link href="/add-new-listing">
+          <Button className="flex gap-2">
+            <Plus /> Post your Ad
+          </Button>
+        </Link>
         {isSignedIn ? (
           <UserButton />
         ) : (
