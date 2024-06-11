@@ -1,14 +1,16 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { Button } from "../../components/ui/button";
 const Header = () => {
   const path = usePathname();
+  const { isSignedIn } = useUser();
   return (
-    <div className="flex p-6 items-center  justify-between shadow-sm fixed top-0 w-full z-10">
+    <div className="flex p-6 items-center  justify-between shadow-sm fixed top-0 w-full z-10 bg-white">
       <div className="flex gap-12 items-center ">
         <Image src={"/logo.svg"} width={50} height={40} alt="LOGO" />
         <ul className="hidden md:flex gap-4">
@@ -46,7 +48,13 @@ const Header = () => {
         <Button className="flex gap-2">
           <Plus /> Post your Ad
         </Button>
-        <Button variant="outline">Login</Button>
+        {isSignedIn ? (
+          <UserButton />
+        ) : (
+          <Link href="/sign-in">
+            <Button variant="outline">Login</Button>
+          </Link>
+        )}
       </div>
     </div>
   );
