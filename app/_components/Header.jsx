@@ -20,7 +20,7 @@ const Header = () => {
                 path === "/" && "text-primary"
               }`}
             >
-              For Sale
+              For Sell
             </li>
           </Link>
           <Link href="/for-rent">
