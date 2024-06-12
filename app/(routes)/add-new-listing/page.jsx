@@ -20,6 +20,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "../../../utils/supabase/client";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const ComboboxDemo = () => {
   const [open, setOpen] = useState(false);
@@ -28,6 +29,7 @@ const ComboboxDemo = () => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedPlaceCoordinates, setSelectedPlaceCoordinates] =
     useState(null);
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const onInputChange = (value) => {
     const apiKey = "1ca2930e08584a7fa5359a43e7079041";
@@ -72,6 +74,7 @@ const ComboboxDemo = () => {
       .select();
     if (data) {
       toast("Data saved successfully");
+      router.replace("/edit-listing/" + data[0]?.id);
     } else if (error) {
       toast("Server error");
     }

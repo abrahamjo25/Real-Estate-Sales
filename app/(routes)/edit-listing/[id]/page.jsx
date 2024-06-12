@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "../../../../components/ui/label";
 import {
   RadioGroup,
@@ -16,12 +16,78 @@ import { Input } from "../../../../components/ui/input";
 import { Textarea } from "../../../../components/ui/textarea";
 import { Formik } from "formik";
 import { Button } from "../../../../components/ui/button";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { supabase } from "../../../../utils/supabase/client";
+import { Loader } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import FileUpload from "../_component/FileUpload";
 const Page = () => {
   const { id } = useParams();
-  const onSubmitHandler = (formValues)=>{
-    
-  }
+  const { user } = useUser();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [listing, setListing] = useState(null);
+  const [images, setImages] = useState(null);
+  const onSubmitHandler = async (formValues) => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("Listing")
+      .update(formValues)
+      .eq("id", id)
+      .select();
+
+    if (data) {
+      for (let image of images) {
+        const file = image;
+        const fileName = new Date().toString();
+        const ext = fileName?.split(".").pop();
+
+        const { error } = await supabase.storage
+          .from("ListingImages")
+          .upload(`${fileName}`, file, {
+            contentType: `image/${ext}`,
+            upsert: false,
+          });
+        if (error) {
+          toast("Error while uploading image.");
+        } else {
+          const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL + fileName;
+          const { data, error } = await supabase
+            .from("ListingImages")
+            .insert([{ url: imageUrl, listing_id: id }])
+            .select();
+
+          if (error) {
+            toast("Error", error);
+          }
+          if (data) {
+            toast("Data Saved Successfully");
+          }
+        }
+      }
+    } else {
+      toast("Server error", error);
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    user && verifyUserRecord();
+  }, [user]);
+  const verifyUserRecord = async () => {
+    const { data, error } = await supabase
+      .from("Listing")
+      .select("*,ListingImages(listing_id,url)")
+      .eq("createdBy", user?.primaryEmailAddress?.emailAddress)
+      .eq("id", id);
+
+    if (data?.length <= 0) {
+      router.replace("/");
+    }
+    if (data) {
+      setListing(data[0]);
+    }
+  };
   return (
     <div className="px-10 md:px-36 my-10">
       <p className="text-2xl font-bold text-slate-600">
@@ -29,10 +95,12 @@ const Page = () => {
       </p>
       <Formik
         initialValues={{
-          type: "Sell",
-          propertyType: "Single familiy",
+          type: listing?.type || "Sell",
+          propertyType: listing?.propertyType || "Single familiy",
+          profileImage: user?.imageUrl,
+          username: user?.fullName,
         }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => onSubmitHandler(values)}
       >
         {({ values, handleChange, handleSubmit }) => (
           <form onSubmit={handleSubmit}>
@@ -41,7 +109,7 @@ const Page = () => {
                 <div className="flex flex-col gap-2">
                   <h2 className="text-lg  text-slate-500">Rent or Sell?</h2>
                   <RadioGroup
-                    defaultValue="Sell"
+                    defaultValue={listing?.type || "Sell"}
                     name="type"
                     onValueChange={(e) => (values.type = e)}
                   >
@@ -62,7 +130,11 @@ const Page = () => {
                     onValueChange={(e) => (values.propertyType = e)}
                   >
                     <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select Property Type" />
+                      <SelectValue
+                        placeholder={
+                          listing?.propertyType || "Select Property Type"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Single familiy">
@@ -82,6 +154,7 @@ const Page = () => {
                   <Input
                     type="number"
                     id="bedroom"
+                    defaultValue={listing?.bedroom}
                     placeholder="Ex. 2"
                     name="bedroom"
                     onChange={handleChange}
@@ -94,6 +167,7 @@ const Page = () => {
                   <Input
                     type="number"
                     id="bathroom"
+                    defaultValue={listing?.bathroom}
                     placeholder="Ex. 2"
                     name="bathroom"
                     onChange={handleChange}
@@ -106,7 +180,8 @@ const Page = () => {
                   <Input
                     type="number"
                     id="builtIn"
-                    placeholder="Ex. 1850 sq.ft"
+                    defaultValue={listing?.builtIn}
+                    placeholder="Ex. 2015"
                     name="builtIn"
                     onChange={handleChange}
                   />
@@ -118,6 +193,7 @@ const Page = () => {
                   <Input
                     type="number"
                     id="parking"
+                    defaultValue={listing?.parking}
                     placeholder="Ex. 2"
                     name="parking"
                     onChange={handleChange}
@@ -130,6 +206,7 @@ const Page = () => {
                   <Input
                     type="number"
                     id="lotSize"
+                    defaultValue={listing?.lotSize}
                     placeholder=""
                     name="lotSize"
                     onChange={handleChange}
@@ -142,6 +219,7 @@ const Page = () => {
                   <Input
                     type="number"
                     id="area"
+                    defaultValue={listing?.area}
                     placeholder="Ex. 1850 sq.ft"
                     name="area"
                     onChange={handleChange}
@@ -154,7 +232,8 @@ const Page = () => {
                   <Input
                     type="number"
                     id="price"
-                    placeholder="400000"
+                    defaultValue={listing?.price}
+                    placeholder="Ex. 400000"
                     name="price"
                     onChange={handleChange}
                   />
@@ -166,6 +245,7 @@ const Page = () => {
                   <Input
                     type="number"
                     id="hoa"
+                    defaultValue={listing?.hoa}
                     placeholder="Ex. 100"
                     name="hoa"
                     onChange={handleChange}
@@ -178,12 +258,29 @@ const Page = () => {
                 </Label>
                 <Textarea
                   id="description"
+                  defaultValue={listing?.description}
                   name="description"
                   onChange={handleChange}
                 />
               </div>
-              <div className="flex flex-col gap-2 mt-8">
-                <Button type="submit">Save</Button>
+              <div className="mt-8">
+                <h2 className="text-lg  text-slate-500">
+                  Upload property Images
+                </h2>
+
+                <FileUpload
+                  setImages={(value) => setImages(value)}
+                  imageList={listing?.ListingImages}
+                />
+              </div>
+              <div className="flex gap-7 mt-8 justify-end">
+                <Button type="submit" disabled={loading}>
+                  {loading ? (
+                    <Loader className="animate-spin" />
+                  ) : (
+                    "Save & Publish"
+                  )}
+                </Button>
               </div>
             </div>
           </form>
