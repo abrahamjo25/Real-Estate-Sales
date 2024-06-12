@@ -1,8 +1,7 @@
 "use client";
 
-import { Check, ChevronsUpDown, MapPin } from "lucide-react";
+import { Check, ChevronsUpDown, Loader, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
-
 import { cn } from "../../../lib/utils";
 import { Button } from "../../../components/ui/button";
 import {
@@ -18,29 +17,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../../components/ui/popover";
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+import { toast } from "sonner";
+import { supabase } from "../../../utils/supabase/client";
+import { useUser } from "@clerk/nextjs";
 
 const ComboboxDemo = () => {
   const [open, setOpen] = useState(false);
@@ -49,7 +28,7 @@ const ComboboxDemo = () => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedPlaceCoordinates, setSelectedPlaceCoordinates] =
     useState(null);
-
+  const [loading, setLoading] = useState(false);
   const onInputChange = (value) => {
     const apiKey = "1ca2930e08584a7fa5359a43e7079041";
     const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(
@@ -71,7 +50,7 @@ const ComboboxDemo = () => {
     setSelectedPlaceCoordinates(place.geometry.coordinates);
     setOpen(false);
   };
-
+  const { user } = useUser();
   useEffect(() => {
     if (value.length > 2) {
       onInputChange(value);
@@ -79,9 +58,27 @@ const ComboboxDemo = () => {
       setSuggestions([]);
     }
   }, [value]);
-
+  const handleSubmit = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("Listing")
+      .insert([
+        {
+          address: selectedPlace.properties.formatted,
+          coordinates: selectedPlaceCoordinates,
+          createdBy: user.primaryEmailAddress.emailAddress,
+        },
+      ])
+      .select();
+    if (data) {
+      toast("Data saved successfully");
+    } else if (error) {
+      toast("Server error");
+    }
+    setLoading(false);
+  };
   return (
-    <div className="p-10 flex flex-col justify-center items-center gap-4 mt-10 lg:mx-80">
+    <div className="p-10 flex flex-col justify-center items-center gap-4 mt-10 md:mx-56 lg:mx-80">
       <h2 className="font-bold text-2xl">Add New Listing</h2>
       <div className="flex flex-col justify-center items-center gap-4 p-5 border shadow-md">
         <h2 className="text-gray-500">
@@ -108,7 +105,9 @@ const ComboboxDemo = () => {
                   onValueChange={setValue}
                 />
                 <CommandList>
-                  {suggestions.length === 0 && <CommandEmpty>No place found.</CommandEmpty>}
+                  {suggestions.length === 0 && (
+                    <CommandEmpty>No place found.</CommandEmpty>
+                  )}
                   <CommandGroup>
                     {suggestions.map((suggestion, index) => (
                       <CommandItem
@@ -143,7 +142,13 @@ const ComboboxDemo = () => {
             {/* You can render a map with these coordinates */}
           </div>
         )}
-        <Button className="w-full">Next</Button>
+        <Button
+          className="w-full"
+          onClick={handleSubmit}
+          disabled={!selectedPlace || loading}
+        >
+          {loading ? <Loader className="animate-spin" /> : "Next"}
+        </Button>
       </div>
     </div>
   );
