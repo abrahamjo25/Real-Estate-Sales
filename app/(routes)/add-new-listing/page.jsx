@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader } from "lucide-react";
-import {  useState } from "react";
+import { useState } from "react";
 import { Button } from "../../../components/ui/button";
 
 import { toast } from "sonner";
@@ -12,8 +12,7 @@ import PlaceSearch from "../../_components/PlaceSearch";
 
 const ComboboxDemo = () => {
   const [selectedPlace, setSelectedPlace] = useState(null);
-  const [selectedPlaceCoordinates, setSelectedPlaceCoordinates] =
-    useState(null);
+  useState(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -25,8 +24,8 @@ const ComboboxDemo = () => {
       .from("Listing")
       .insert([
         {
-          address: selectedPlace.properties.formatted,
-          coordinates: selectedPlaceCoordinates,
+          address: selectedPlace?.properties.formatted,
+          coordinates: selectedPlace?.geometry.coordinates,
           createdBy: user.primaryEmailAddress.emailAddress,
         },
       ])
@@ -46,18 +45,14 @@ const ComboboxDemo = () => {
         <h2 className="text-gray-500">
           Enter Address which you want to add to list
         </h2>
-        <PlaceSearch
-          setSelectedPlace={setSelectedPlace}
-          setSelectedPlaceCoordinates={setSelectedPlaceCoordinates}
-        />
+        <PlaceSearch setSelectedPlace={setSelectedPlace} />
         {selectedPlace && (
           <div>
             <p>Selected Place:</p>
             <p>{selectedPlace.properties.formatted}</p>
             <p>Coordinates:</p>
-            <p>Latitude: {selectedPlaceCoordinates[1]}</p>
-            <p>Longitude: {selectedPlaceCoordinates[0]}</p>
-            {/* You can render a map with these coordinates */}
+            <p>Latitude: {selectedPlace?.geometry.coordinates[1]}</p>
+            <p>Longitude: {selectedPlace?.geometry.coordinates[0]}</p>
           </div>
         )}
         <Button

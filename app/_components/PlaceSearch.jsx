@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../components/ui/popover";
-const PlaceSearch = ({ setSelectedPlace, setSelectedPlaceCoordinates }) => {
+const PlaceSearch = ({ setSelectedPlace }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -39,7 +39,6 @@ const PlaceSearch = ({ setSelectedPlace, setSelectedPlaceCoordinates }) => {
   const handleSelectPlace = (place) => {
     setValue(place.properties.formatted);
     setSelectedPlace(place);
-    setSelectedPlaceCoordinates(place.geometry.coordinates);
     setOpen(false);
   };
   useEffect(() => {

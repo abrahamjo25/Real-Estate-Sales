@@ -5,19 +5,14 @@ import React, { useState } from "react";
 import PlaceSearch from "./PlaceSearch";
 import { Button } from "../../components/ui/button";
 
-const Listing = ({ listing }) => {
-  const [selectedPlace, setSelectedPlace] = useState(null);
-  const [selectedPlaceCoordinates, setSelectedPlaceCoordinates] =
-    useState(null);
+const Listing = ({ listing, handleSearch, setSelectedPlace }) => {
   return (
     <div className="">
-      <div className="p-3">
-        <PlaceSearch
-          setSelectedPlace={setSelectedPlace}
-          setSelectedPlaceCoordinates={setSelectedPlaceCoordinates}
-        />
-        <Button className="flex gap-2">
-          <Search />
+      <div className="p-3 flex gap-4">
+        <PlaceSearch setSelectedPlace={setSelectedPlace} />
+        <Button className="flex gap-2" onClick={handleSearch}>
+          <Search className="w-4 h-4" />
+          Search
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
