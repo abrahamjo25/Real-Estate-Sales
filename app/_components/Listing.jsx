@@ -1,11 +1,9 @@
 "use client";
 import { Bath, BedDouble, MapPin, Ruler, Search } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
 import PlaceSearch from "./PlaceSearch";
 import { Button } from "../../components/ui/button";
 import FilterList from "./FilterList";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 const Listing = ({
   listing,

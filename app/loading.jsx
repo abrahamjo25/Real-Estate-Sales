@@ -5,7 +5,7 @@ import { Commet } from "react-loading-indicators";
 const Loading = () => {
   return (
     <div className="flex justify-center items-center h-screen">
-      <Commet color="#7f57f1" size="large" text="" textColor="#5e2020" />
+      <Commet color="#007AFF" size="large" text="" textColor="#5e2020" />
     </div>
   );
 };
