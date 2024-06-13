@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "embla-carousel-react": "^8.1.5",
     "formik": "^2.4.6",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.394.0",
@@ -30,6 +31,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-leaflet": "^4.2.1",
+    "react-loading-indicators": "^0.2.3",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"

@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../components/ui/popover";
+import { toast } from "sonner";
 const PlaceSearch = ({ setSelectedPlace }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
