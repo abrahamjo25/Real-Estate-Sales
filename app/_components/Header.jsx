@@ -37,7 +37,7 @@ const Header = () => {
             className="font-bold hidden md:flex "
             style={{ color: "#007AFF" }}
           >
-            JUMBORO
+            Real Estate
           </h2>
         </div>
         <ul className="hidden md:flex gap-4">
