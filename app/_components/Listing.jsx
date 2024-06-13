@@ -39,11 +39,8 @@ const Listing = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
         {listing?.length > 0
           ? listing?.map((list, index) => (
-              <Link href={"/view-listing/" + list?.id}>
-                <div
-                  className="p-3 hover:border hover:border-primary cursor-pointer rounded-lg"
-                  key={index}
-                >
+              <Link href={"/view-listing/" + list?.id} key={index}>
+                <div className="p-3 hover:border hover:border-primary cursor-pointer rounded-lg">
                   <Image
                     src={list?.ListingImages[0]?.url}
                     width={600}

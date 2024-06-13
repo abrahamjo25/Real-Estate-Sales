@@ -64,7 +64,7 @@ const UserListing = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-4 mt-2">
       {listing?.length > 0
         ? listing?.map((list, index) => (
-            <div>
+            <div key={index}>
               <div
                 className="p-3 hover:border hover:border-primary cursor-pointer rounded-lg"
                 key={index}

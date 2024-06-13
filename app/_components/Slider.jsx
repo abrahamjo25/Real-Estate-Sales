@@ -17,7 +17,7 @@ const Slider = ({ imageList }) => {
         <Carousel>
           <CarouselContent>
             {imageList.map((item, index) => (
-              <CarouselItem>
+              <CarouselItem key={index}>
                 <Image
                   src={item?.url}
                   width={800}
