@@ -25,7 +25,7 @@ const Page = ({ params }) => {
   return (
     <div className="px-4 md:px-56 lg:px-64  xl:px-80 my-3">
       <Slider imageList={listing?.ListingImages} />
-      <Details />
+      <Details listing= {listing}/>
     </div>
   );
 };
