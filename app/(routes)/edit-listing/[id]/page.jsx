@@ -137,11 +137,11 @@ const Page = () => {
                       />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Single familiy">
-                        Single familiy
+                      <SelectItem value="Single family">
+                      Single family 
                       </SelectItem>
                       <SelectItem value="Town House">Town House</SelectItem>
-                      <SelectItem value="Condominum">Condominum</SelectItem>
+                      <SelectItem value="Condo">Condo</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

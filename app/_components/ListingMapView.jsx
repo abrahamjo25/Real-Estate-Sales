@@ -3,9 +3,15 @@ import React, { useEffect, useState } from "react";
 import Listing from "./Listing";
 import { supabase } from "../../utils/supabase/client";
 import { toast } from "sonner";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+
 const ListingMapView = ({ type }) => {
   const [listing, setListing] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [bedCount, setBedCount] = useState(0);
+  const [bathCount, setBathCount] = useState(0);
+  const [parkingCount, setParkingCount] = useState(0);
+  const [homeType, sethomeType] = useState(null);
   useEffect(() => {
     getLatestListing();
   }, []);
@@ -24,13 +30,19 @@ const ListingMapView = ({ type }) => {
   };
   const handleSearch = async () => {
     const searchText = selectedPlace?.properties.formatted;
-    const { data, error } = await supabase
+    let query = supabase
       .from("Listing")
       .select("*,ListingImages(listing_id,url)")
       .eq("type", type)
+      .gte("bedroom", bedCount)
+      .gte("bathroom", bathCount)
+      .gte("parking", parkingCount)
       .order("id", { ascending: false })
       .like("address", "%" + searchText + "%");
-
+    if (homeType) {
+      query = query.eq("propertyType", homeType);
+    }
+    const { data, error } = await query;
     if (data) {
       setListing(data);
     }
@@ -45,9 +57,32 @@ const ListingMapView = ({ type }) => {
           listing={listing}
           handleSearch={handleSearch}
           setSelectedPlace={setSelectedPlace}
+          setBedCount={setBedCount}
+          setBathCount={setBathCount}
+          setParkingCount={setParkingCount}
+          sethomeType={sethomeType}
         />
       </div>
-      <div className="">Map</div>
+      <div className="">
+        <MapContainer
+          center={[selectedPlaceCoordinates[1], selectedPlaceCoordinates[0]]}
+          zoom={13}
+          style={{ height: "400px", width: "100%" }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          <Marker
+            position={[
+              selectedPlace?.geometry.coordinates[1],
+              selectedPlace?.geometry.coordinates[0],
+            ]}
+          >
+            <Popup>{selectedPlace.properties.formatted}</Popup>
+          </Marker>
+        </MapContainer>
+      </div>
     </div>
   );
 };

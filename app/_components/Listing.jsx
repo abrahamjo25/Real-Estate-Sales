@@ -4,8 +4,16 @@ import Image from "next/image";
 import React, { useState } from "react";
 import PlaceSearch from "./PlaceSearch";
 import { Button } from "../../components/ui/button";
-
-const Listing = ({ listing, handleSearch, setSelectedPlace }) => {
+import FilterList from "./FilterList";
+const Listing = ({
+  listing,
+  handleSearch,
+  setSelectedPlace,
+  setBedCount,
+  setBathCount,
+  setParkingCount,
+  sethomeType,
+}) => {
   return (
     <div className="">
       <div className="p-3 flex gap-4">
@@ -15,7 +23,20 @@ const Listing = ({ listing, handleSearch, setSelectedPlace }) => {
           Search
         </Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="">
+        <FilterList
+          setBedCount={setBedCount}
+          setBathCount={setBathCount}
+          setParkingCount={setParkingCount}
+          sethomeType={sethomeType}
+        />
+      </div>
+      <div className="">
+        <h2 className="font-bold text-md text-slate-500 text-center mt-2 mb-2">
+          {listing?.length} results found
+        </h2>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
         {listing?.length > 0
           ? listing?.map((list, index) => (
               <div
@@ -24,8 +45,8 @@ const Listing = ({ listing, handleSearch, setSelectedPlace }) => {
               >
                 <Image
                   src={list?.ListingImages[0]?.url}
-                  width={800}
-                  height={150}
+                  width={600}
+                  height={200}
                   alt={index}
                   className="rounded-lg object-cover h-[170px]"
                 />
@@ -47,7 +68,7 @@ const Listing = ({ listing, handleSearch, setSelectedPlace }) => {
                     </div>
                     <div className="flex gap-2 w-full bg-slate-200 rounded-md text-gray-500 justify-center items-center">
                       <Ruler className="h-4 w-4" />
-                      {list?.area}
+                      {list?.area} sq
                     </div>
                   </div>
                 </div>
