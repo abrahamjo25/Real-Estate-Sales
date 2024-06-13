@@ -73,7 +73,7 @@ const Details = ({ listing }) => {
       <div className="flex justify-betwwen gap-10">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-green-700 items-center justify-center">
-            <p className="text-center text-white text-4xl mt-3">J</p>
+            <p className="text-center text-white text-4xl mt-3">@</p>
           </div>
           <div className="font-medium dark:text-white">
             <div>{listing?.username}</div>
