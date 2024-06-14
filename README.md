@@ -12,8 +12,7 @@ This project is a Real Estate sales and rental service website built using Next.
 - Next.js
 - Supabase
 - React
-- CSS
-- HTML
+- TailwindCss
 
 ## Getting Started
 To get started with this project, follow these steps:
