@@ -1,5 +1,5 @@
 "use client";
-import { UserButton, useAuth, useUser } from "@clerk/nextjs";
+import {  useAuth, useUser } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,7 +59,7 @@ const Header = () => {
               For Rent
             </li>
           </Link>
-          <Link href="/agent-finder">
+          {/* <Link href="/agent-finder">
             <li
               className={`hover:text-primary cursor-pointer font-medium text-sm ${
                 path === "/agent-finder" && "text-primary"
@@ -67,7 +67,7 @@ const Header = () => {
             >
               Agent Finder
             </li>
-          </Link>
+          </Link> */}
         </ul>
       </div>
 
